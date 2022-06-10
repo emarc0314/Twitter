@@ -30,21 +30,19 @@ import okhttp3.Headers;
 public class TimelineActivity extends AppCompatActivity {
 
     private SwipeRefreshLayout swipeContainer;
-
     TwitterClient client;
     RecyclerView rvTweets;
     List<Tweet> tweets;
     TweetsAdapter adapter;
     public static final String TAG = "TimelineActivity";
     private final int REQUEST_CODE = 20;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
-
         client = TwitterApp.getRestClient(this);
         swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
-
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -53,7 +51,6 @@ public class TimelineActivity extends AppCompatActivity {
                 // once the network request has completed successfully.
                 fetchTimelineAsync(0);
             }
-
         });
 
         // Configure the refreshing colors
@@ -61,7 +58,6 @@ public class TimelineActivity extends AppCompatActivity {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-
 
         rvTweets = findViewById(R.id.rvTweets);
         tweets = new ArrayList<>();
@@ -76,7 +72,6 @@ public class TimelineActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
-//        return super.onCreateOptionsMenu(menu);
     }
 
     @Override

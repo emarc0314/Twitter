@@ -23,12 +23,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 
 import org.parceler.Parcels;
 
 import java.text.ParseException;
 import java.util.List;
 import java.util.Locale;
+
+import okhttp3.Headers;
 
 public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder> {
     Context context;
@@ -38,7 +41,6 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         this.context = context;
         this.tweets = tweets;
     }
-
     //For each row inflate the layout
 
     @NonNull
@@ -79,7 +81,6 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         private static final int MINUTE_MILLIS = 60 * SECOND_MILLIS;
         private static final int HOUR_MILLIS = 60 * MINUTE_MILLIS;
         private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
-
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -135,11 +136,56 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvBody.setText(tweet.body);
             tvScreenName.setText(tweet.user.screenName);
             tvName.setText(tweet.user.getName());
+            tvFavoriteCount.setText(String.valueOf(tweet.favoriteCount));
             tvCreatedat.setText(" • " + getRelativeTimeAgo(tweet.createdAt));
+
+            if(!tweet.isFavorited){
+                Glide.with(context).load(R.drawable.ic_vector_heart_stroke).into(ibFavorite);
+            }
+            else{
+                Glide.with(context).load(R.drawable.ic_vector_heart).into(ibFavorite);
+
+            }
+
 
             ibFavorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    if(!tweet.isFavorited){
+//                        Drawable newIMage = context.getDrawable()
+                        Glide.with(context).load(R.drawable.ic_vector_heart).into(ibFavorite);
+//                        ibFavorite.setImageDrawable(R.drawable.ic_vector_heart_stroke).into(ibFavorite);
+                        tweet.favoriteCount = tweet.favoriteCount + 1;
+                        tvFavoriteCount.setText(String.valueOf(tweet.favoriteCount));
+                        TwitterApp.getRestClient(context).favorite(tweet.id, new JsonHttpResponseHandler() {
+                            @Override
+                            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                                Log.i("adapter", "This sghould've been favorite");
+                            }
+
+                            @Override
+                            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+
+                            }
+                        });
+                    }
+                    else{
+                        Glide.with(context).load(R.drawable.ic_vector_heart_stroke).into(ibFavorite);
+                        tweet.favoriteCount = tweet.favoriteCount - 1;
+                        tvFavoriteCount.setText(String.valueOf(tweet.favoriteCount));
+
+                        TwitterApp.getRestClient(context).unfavorite(tweet.id, new JsonHttpResponseHandler() {
+                            @Override
+                            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                                Log.i("adapter", "This sghould've been favorite");
+                            }
+                            @Override
+                            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                            }
+                        });
+
+                    }
+                    tweet.isFavorited = !tweet.isFavorited;
 
                     //if not already favorited
                         //tell twitter I want to favorite
@@ -165,12 +211,18 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                     .getMetrics(displayMetrics);
 
             int imageWidth = displayMetrics.widthPixels - 100;
-
             int imageHeight = (int)(imageWidth * tweet.picsizeratio);
 
-            Glide.with(context).load(tweet.picurl)
-                    .override(imageWidth, imageHeight)
-                    .transform(new RoundedCorners(radius)).into(ivURL);
+            if(!tweet.picurl.isEmpty()){
+                Glide.with(context).load(tweet.picurl)
+                        .override(imageWidth, imageHeight)
+                        .transform(new RoundedCorners(radius)).into(ivURL);
+                ivURL.setVisibility(View.VISIBLE);
+            }
+            else{
+                ivURL.setVisibility(View.GONE);
+            }
+
         }
 
         @Override
