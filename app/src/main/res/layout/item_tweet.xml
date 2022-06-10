@@ -86,7 +86,6 @@
         android:layout_toEndOf="@+id/tvScreenName"
         android:text="TextView" />
 
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -95,39 +94,37 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="16dp">
 
-
         <ImageButton
-            android:id="@+id/imageButton3"
+            android:id="@+id/ibReply"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_weight="1"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginRight="30dp"
             android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_weight="1"
             android:background="#00000000"
             app:srcCompat="@drawable/message" />
 
         <ImageButton
-            android:id="@+id/imageButton2"
+            android:id="@+id/ibRetweet"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_weight="1"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_centerHorizontal="true"
             android:layout_marginRight="30dp"
+            android:layout_weight="1"
             android:background="#00000000"
             app:srcCompat="@drawable/ic_vector_retweet_stroke" />
-
 
         <ImageButton
             android:id="@+id/ibFavorite"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_weight="1"
             android:layout_below="@+id/ivURL"
+            android:layout_weight="1"
             android:background="#00000000"
             app:srcCompat="@drawable/ic_vector_heart_stroke" />
 
@@ -135,15 +132,12 @@
             android:id="@+id/tvFavoriteCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_alignTop="@+id/ibFavorite"
             android:layout_alignParentEnd="true"
             android:layout_toEndOf="@+id/ibFavorite"
+            android:layout_weight="1"
+
             android:text="TextView"
             android:textSize="10sp" />
-
-
     </LinearLayout>
-
-
 </RelativeLayout>

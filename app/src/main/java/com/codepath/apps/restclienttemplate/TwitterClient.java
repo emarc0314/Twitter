@@ -1,12 +1,11 @@
 package com.codepath.apps.restclienttemplate;
 
-import android.app.DownloadManager;
 import android.content.Context;
 
+import com.codepath.asynchttpclient.AbsCallback;
 import com.codepath.asynchttpclient.RequestParams;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.codepath.oauth.OAuthBaseClient;
-import com.github.scribejava.apis.FlickrApi;
 import com.github.scribejava.apis.TwitterApi;
 import com.github.scribejava.core.builder.api.BaseApi;
 
@@ -43,8 +42,6 @@ public class TwitterClient extends OAuthBaseClient {
 				String.format(REST_CALLBACK_URL_TEMPLATE, context.getString(R.string.intent_host),
 						context.getString(R.string.intent_scheme), context.getPackageName(), FALLBACK_URL));
 	}
-	// CHANGE THIS
-	// DEFINE METHODS for different API endpoints here
 	public void getHomeTimeline(JsonHttpResponseHandler handler) {
 		String apiUrl = getApiUrl("statuses/home_timeline.json");
 		// Can specify query string params directly or through RequestParams.
@@ -52,6 +49,15 @@ public class TwitterClient extends OAuthBaseClient {
 		params.put("count", 25);
 		params.put("since_id",  1);
 		client.get(apiUrl, params, handler);
+	}
+
+	public void replyToTweet(String idOfTweetToReplyTo, String tweetId, JsonHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("statuses/update.json");
+		// Can specify query string params directly or through RequestParams.
+		RequestParams params = new RequestParams();
+		params.put("status", tweetId);
+		params.put("in_reply_to_status_id", idOfTweetToReplyTo);
+		client.post(apiUrl, params,"", handler);
 	}
 
 	public void publishTweet(String tweetId, JsonHttpResponseHandler handler) {
@@ -66,7 +72,6 @@ public class TwitterClient extends OAuthBaseClient {
 		String apiUrl = getApiUrl("favorites/create.json");
 		RequestParams params = new RequestParams();
 		params.put("id",tweetId);
-
 		client.post(apiUrl, params, "", handler);
 	}
 
@@ -74,7 +79,6 @@ public class TwitterClient extends OAuthBaseClient {
 		String apiUrl = getApiUrl("favorites/destroy.json");
 		RequestParams params = new RequestParams();
 		params.put("id",tweetId);
-
 		client.post(apiUrl, params, "", handler);
 	}
 	/* 1. Define the endpoint URL with getApiUrl and pass a relative path to the endpoint

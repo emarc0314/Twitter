@@ -8,7 +8,6 @@ import org.json.JSONObject;
 import org.parceler.Parcel;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 @Parcel
@@ -48,7 +47,6 @@ public class Tweet {
         else {
             JSONObject mediaObject = jsonObject.getJSONObject("entities").getJSONArray("media").getJSONObject(0);
             tweet.picurl = mediaObject.getString("media_url_https");
-            //getting size
             JSONArray sizeCategories = mediaObject.getJSONObject("sizes").names();
 
             for(int i = 0; i < sizeCategories.length(); i++) {
@@ -74,15 +72,7 @@ public class Tweet {
         return tweets;
     }
 
-    public String getUsername(){
-        return user.name;
-    }
-
     public String getPicURL(){
         return picurl;
-    }
-
-    public String getProfile(){
-        return "";
     }
 }

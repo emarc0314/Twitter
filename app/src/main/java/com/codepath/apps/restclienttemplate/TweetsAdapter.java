@@ -41,7 +41,6 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         this.context = context;
         this.tweets = tweets;
     }
-    //For each row inflate the layout
 
     @NonNull
     @Override
@@ -50,23 +49,18 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         return new ViewHolder(view);
     }
 
-    //Bind values based on the position of the element
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        //get the data at position
         Tweet tweet = tweets.get(position);
-        //Bind the tweet with view holder
         holder.bind(tweet);
     }
 
-    //Pass in the context and list of tweets
     @Override
     public int getItemCount() {
         return tweets.size();
     }
 
-    //Define a viewholder
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView ivProfileImage;
         TextView tvBody;
@@ -75,7 +69,9 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         TextView tvCreatedat;
         ImageView ivURL;
         ImageButton ibFavorite;
+        ImageButton ibReply;
         TextView tvFavoriteCount;
+        int radius = 30;
 
         private static final int SECOND_MILLIS = 1000;
         private static final int MINUTE_MILLIS = 60 * SECOND_MILLIS;
@@ -92,6 +88,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvCreatedat = itemView.findViewById(R.id.tvCreatedat);
             ibFavorite = itemView.findViewById(R.id.ibFavorite);
             tvFavoriteCount = itemView.findViewById(R.id.tvFavoriteCount);
+            ibReply = itemView.findViewById(R.id.ibReply);
             itemView.setOnClickListener(this);
         }
 
@@ -106,7 +103,6 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                 long now = System.currentTimeMillis();
 
                 final long diff = now - time;
-//                Log.i("diff", );
                 if (diff < MINUTE_MILLIS) {
                     return "just now";
                 } else if (diff < 2 * MINUTE_MILLIS) {
@@ -126,7 +122,6 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                 Log.i("whatever", "getRelativeTimeAgo failed");
                 e.printStackTrace();
             }
-
             return "";
         }
 
@@ -144,17 +139,24 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             }
             else{
                 Glide.with(context).load(R.drawable.ic_vector_heart).into(ibFavorite);
-
             }
 
+            ibReply.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = new Intent(context, ComposeActivity.class);
+                    i.putExtra("should_reply_to_tweet", true);
+                    i.putExtra("id_of_tweet_to_reply_to", tweet.id);
+                    i.putExtra("tweet",Parcels.wrap(tweet));
+                    ((Activity)context).startActivityForResult(i, TimelineActivity.REQUEST_CODE);
+                }
+            });
 
             ibFavorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if(!tweet.isFavorited){
-//                        Drawable newIMage = context.getDrawable()
                         Glide.with(context).load(R.drawable.ic_vector_heart).into(ibFavorite);
-//                        ibFavorite.setImageDrawable(R.drawable.ic_vector_heart_stroke).into(ibFavorite);
                         tweet.favoriteCount = tweet.favoriteCount + 1;
                         tvFavoriteCount.setText(String.valueOf(tweet.favoriteCount));
                         TwitterApp.getRestClient(context).favorite(tweet.id, new JsonHttpResponseHandler() {
@@ -165,7 +167,6 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
 
                             @Override
                             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-
                             }
                         });
                     }
@@ -186,16 +187,6 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
 
                     }
                     tweet.isFavorited = !tweet.isFavorited;
-
-                    //if not already favorited
-                        //tell twitter I want to favorite
-                        // change the drawable to btn_star_big_on
-                         // increment the text inside tvFavoriteCount
-                    //else if favorited
-                        //tell twitter I want to unfavorite this
-                        //change drawable back to btn_star_off
-                        // decrement the text inside tvFavoriteCount
-
                 }
             });
 
@@ -203,7 +194,6 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                     .load(tweet.user.profileImageUrl)
                     .transform(new RoundedCorners(profileRadius))
                     .into(ivProfileImage);
-            int radius = 30;
 
             DisplayMetrics displayMetrics = new DisplayMetrics();
             ((Activity) context).getWindowManager()
@@ -222,34 +212,25 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             else{
                 ivURL.setVisibility(View.GONE);
             }
-
         }
 
         @Override
         public void onClick(View v) {
-            // gets item position
             int position = getAdapterPosition();
-            // make sure the position is valid, i.e. actually exists in the view
             if (position != RecyclerView.NO_POSITION) {
-                // get the movie at the position, this won't work if the class is static
                 Tweet tweet = tweets.get(position);
-                // create intent for the new activity
                 Intent intent = new Intent(context, DetailActivity.class);
-                // serialize the movie using parceler, use its short name as a key
                 intent.putExtra(Tweet.class.getSimpleName(), Parcels.wrap(tweet));
-                // show the activity
                 context.startActivity(intent);
             }
         }
     }
 
-    // Clean all elements of the recycler
     public void clear() {
         tweets.clear();
         notifyDataSetChanged();
     }
 
-    // Add a list of items -- change to type used
     public void addAll(List<Tweet> list) {
         tweets.addAll(list);
         notifyDataSetChanged();
