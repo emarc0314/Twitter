@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
     android:layout_marginStart="0dp"
-    app:layout_constraintBottom_toBottomOf="@+id/tvBody"
+    app:layout_constraintBottom_toBottomOf="@+id/ibFavorite"
     android:layout_marginTop="0dp">
 
     <ImageView
@@ -22,10 +22,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
         android:layout_marginStart="5dp"
         android:layout_marginTop="1dp"
-        android:layout_marginEnd="0dp"
         android:layout_toEndOf="@+id/tvName"
         android:text="TextView"
         tools:text="shaggypopper" />
@@ -41,18 +39,19 @@
         android:layout_marginStart="0dp"
         android:layout_marginTop="0dp"
         android:text="TextView"
+        android:autoLink="all"
+        android:linksClickable="true"
         android:textColor="#000000"
         tools:text="NFT son or Astrology daughter" />
 
     <ImageView
         android:id="@+id/ivURL"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvBody"
-        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="5dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="0dp"
         tools:srcCompat="@tools:sample/avatars" />
 
     <View
@@ -73,4 +72,42 @@
         android:text="TextView"
         android:textColor="#050505"
         android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvCreatedat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_toEndOf="@+id/tvScreenName"
+        android:text="TextView" />
+
+    <ImageButton
+        android:id="@+id/ibFavorite"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_below="@+id/ivURL"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="275dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="#00000000"
+        app:srcCompat="@drawable/ic_vector_heart" />
+
+    <TextView
+        android:id="@+id/tvFavoriteCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/ibFavorite"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="-8dp"
+        android:layout_toEndOf="@+id/ibFavorite"
+        android:text="TextView"
+        android:textSize="10sp" />
+
+
 </RelativeLayout>
